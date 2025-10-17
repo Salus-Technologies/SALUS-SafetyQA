@@ -1,0 +1,107 @@
+# Example Benchmark Evaluation Configuration
+# Copy this to benchmark_config.yaml and fill in your values
+
+# Default system prompt for evaluations
+system_prompt: |
+  You are an expert safety professional answering multiple choice questions about construction safety procedures, regulations, and best practices.
+
+  Instructions:
+  1. Carefully read the question and all answer options
+  2. Select the answer that is most accurate and complete based on your knowledge
+  3. Provide clear reasoning for your selection
+  4. Express your confidence level (0-1) in your answer
+
+  Important guidelines:
+  - Prioritize accuracy and safety in your answers
+  - When multiple options seem partially correct, choose the most comprehensive one
+  - For safety questions, always err on the side of caution
+  - Be specific when discussing regulations, standards, or specifications
+
+  You must respond with the selected answer label, confidence score, and reasoning.
+
+# API Configuration (optional - for API mode evaluation)
+# This allows you to evaluate your own AI system via API
+# See API_SPECIFICATION.md for endpoint implementation details
+api:
+  # Your API base URL (if using API mode)
+  base_url: "https://your-api-endpoint.com"
+  # Endpoint path (default: /evaluate)
+  endpoint_path: "/evaluate"
+  # API key can be set here or via API_KEY env var
+  api_key: ""
+  # Bearer token can be set here or via BEARER_TOKEN env var
+  bearer_token: ""
+
+# Direct LLM Configuration
+llm_providers:
+  gemini:
+    models:
+      - name: "gemini-2.0-flash-latest"
+        display_name: "Gemini 2.0 Flash"
+      - name: "gemini-2.5-pro"
+        display_name: "Gemini 2.5 Pro"
+      - name: "gemini-1.5-flash-latest"
+        display_name: "Gemini 1.5 Flash"
+    # API key via GOOGLE_API_KEY env var
+    
+  anthropic:
+    models:
+      - name: "claude-opus-4-1-20250805"
+        display_name: "Claude 4.1 Opus"
+      - name: "claude-sonnet-4-5"
+        display_name: "Claude 4.5 Sonnet"
+      - name: "claude-3-sonnet-20240229"
+        display_name: "Claude 3 Sonnet"
+      - name: "claude-3-haiku-20240307"
+        display_name: "Claude 3 Haiku"
+    # API key via ANTHROPIC_API_KEY env var
+    
+  openai:
+    models:
+      - name: "gpt-5"
+        display_name: "GPT-5"
+      - name: "gpt-4o"
+        display_name: "GPT-4o"
+      - name: "gpt-4-turbo"
+        display_name: "GPT-4 Turbo"
+      - name: "gpt-4"
+        display_name: "GPT-4"
+      - name: "gpt-3.5-turbo"
+        display_name: "GPT-3.5 Turbo"
+    # API key via OPENAI_API_KEY env var
+
+# Evaluation Settings
+evaluation:
+  # Maximum number of documents to retrieve for context
+  search_limit: 50
+  
+  # Maximum number of documents after reranking
+  rerank_limit: 20
+  
+  # Optional: Override rerank_limit with specific top_k value
+  # Useful for testing different retrieval sizes (e.g., 10, 20, 30)
+  # top_k: 20
+  
+  # Whether to include reasoning in responses
+  include_reasoning: true
+  
+  # Temperature for LLM generation (0.0 = deterministic)
+  # Note: GPT-5 only supports default temperature (1.0)
+  temperature: 0.0
+  
+  # Delay between API calls in seconds (for rate limiting)
+  delay_between_calls: 0.5
+  
+  # Batch size for API evaluation
+  batch_size: 10
+  
+  # Output directory for results
+  output_dir: "benchmark_results"
+
+# Comparison Settings
+comparison:
+  # Output directory for comparison reports
+  output_dir: "benchmark_comparisons"
+  
+  # Maximum number of disagreement examples to show
+  max_disagreements_shown: 10

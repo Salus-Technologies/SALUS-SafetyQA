@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Distribution
+build/
+dist/
+*.egg-info/
+salus_safetyqa.egg-info/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Evaluation outputs
+benchmark_results/
+*.log
+
+# Environment
+.env
+.env.local
+
+# Configuration (contains API keys/endpoints)
+benchmark_config.yaml
+
