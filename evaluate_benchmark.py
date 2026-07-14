@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.models.google import GoogleModel
-from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.providers.google import GoogleProvider
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -368,9 +368,11 @@ class UnifiedBenchmarkEvaluator:
     def _create_direct_agent(self, provider: ModelProvider, model: str) -> Agent:
         """Create an agent for direct LLM evaluation."""
         # Model and provider configuration
+        # OpenAI uses the Responses API: GPT-5-family reasoning models reject
+        # function-tool calls (used for structured output) over /v1/chat/completions.
         providers_config = {
             ModelProvider.GEMINI: (GoogleModel, GoogleProvider, "GEMINI_API_KEY"),
-            ModelProvider.OPENAI: (OpenAIModel, OpenAIProvider, "OPENAI_API_KEY"),
+            ModelProvider.OPENAI: (OpenAIResponsesModel, OpenAIProvider, "OPENAI_API_KEY"),
             ModelProvider.ANTHROPIC: (AnthropicModel, AnthropicProvider, "ANTHROPIC_API_KEY"),
         }
 
