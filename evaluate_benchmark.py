@@ -49,6 +49,29 @@ class ModelProvider(str, Enum):
     API = "api"
 
 
+# Models that reject a custom `temperature` (they return HTTP 400 if one is sent).
+# Extend these as new families ship.
+#   - OpenAI GPT-5 family / reasoning models: any model name containing "gpt-5"
+#     (gpt-5, gpt-5.4, gpt-5.6 and tier variants such as gpt-5.6-sol, ...)
+#   - Anthropic Opus 4.7+, Sonnet 5, Fable 5, Mythos 5
+_ANTHROPIC_NO_TEMPERATURE = (
+    "claude-opus-4-7",
+    "claude-opus-4-8",
+    "claude-sonnet-5",
+    "claude-fable-5",
+    "claude-mythos-5",
+)
+
+
+def rejects_custom_temperature(provider: ModelProvider, model: str) -> bool:
+    """Whether a provider/model pair rejects a custom ``temperature`` setting."""
+    if provider == ModelProvider.OPENAI and "gpt-5" in model:
+        return True
+    if provider == ModelProvider.ANTHROPIC and any(m in model for m in _ANTHROPIC_NO_TEMPERATURE):
+        return True
+    return False
+
+
 # Data Models
 class MCOption(BaseModel):
     """Multiple choice option"""
@@ -367,10 +390,12 @@ class UnifiedBenchmarkEvaluator:
             provider=provider_class(api_key=api_key),
         )
 
-        # Create agent with appropriate settings
-        # GPT-5 doesn't support custom temperature (only default value of 1.0)
-        if provider == ModelProvider.OPENAI and "gpt-5" in model:
-            model_settings = ModelSettings()  # Use defaults for GPT-5
+        # Create agent with appropriate settings.
+        # Some models reject a custom temperature and 400 if one is sent
+        # (OpenAI GPT-5 family; Anthropic Opus 4.7+/Sonnet 5/Fable 5). Use provider
+        # defaults for those; otherwise pin the configured temperature.
+        if rejects_custom_temperature(provider, model):
+            model_settings = ModelSettings()  # provider default (custom temperature unsupported)
         else:
             model_settings = ModelSettings(temperature=self.config.evaluation.temperature)
 

@@ -36,38 +36,34 @@ api:
 llm_providers:
   gemini:
     models:
-      - name: "gemini-2.0-flash-latest"
-        display_name: "Gemini 2.0 Flash"
-      - name: "gemini-2.5-pro"
-        display_name: "Gemini 2.5 Pro"
-      - name: "gemini-1.5-flash-latest"
-        display_name: "Gemini 1.5 Flash"
+      - name: "gemini-3.5-flash"
+        display_name: "Gemini 3.5 Flash"
+      - name: "gemini-3.1-flash-lite"
+        display_name: "Gemini 3.1 Flash-Lite"
     # API key via GOOGLE_API_KEY env var
     
   anthropic:
     models:
-      - name: "claude-opus-4-1-20250805"
-        display_name: "Claude 4.1 Opus"
-      - name: "claude-sonnet-4-5"
-        display_name: "Claude 4.5 Sonnet"
-      - name: "claude-3-sonnet-20240229"
-        display_name: "Claude 3 Sonnet"
-      - name: "claude-3-haiku-20240307"
-        display_name: "Claude 3 Haiku"
+      - name: "claude-opus-4-8"
+        display_name: "Claude Opus 4.8"
+      - name: "claude-sonnet-5"
+        display_name: "Claude Sonnet 5"
+      - name: "claude-haiku-4-5"
+        display_name: "Claude Haiku 4.5"
+      - name: "claude-fable-5"
+        display_name: "Claude Fable 5"
     # API key via ANTHROPIC_API_KEY env var
     
   openai:
     models:
+      - name: "gpt-5.6-sol"
+        display_name: "GPT-5.6 Sol"
+      - name: "gpt-5.6-terra"
+        display_name: "GPT-5.6 Terra"
+      - name: "gpt-5.6-luna"
+        display_name: "GPT-5.6 Luna"
       - name: "gpt-5"
         display_name: "GPT-5"
-      - name: "gpt-4o"
-        display_name: "GPT-4o"
-      - name: "gpt-4-turbo"
-        display_name: "GPT-4 Turbo"
-      - name: "gpt-4"
-        display_name: "GPT-4"
-      - name: "gpt-3.5-turbo"
-        display_name: "GPT-3.5 Turbo"
     # API key via OPENAI_API_KEY env var
 
 # Evaluation Settings
@@ -85,8 +81,10 @@ evaluation:
   # Whether to include reasoning in responses
   include_reasoning: true
   
-  # Temperature for LLM generation (0.0 = deterministic)
-  # Note: GPT-5 only supports default temperature (1.0)
+  # Temperature for LLM generation (0.0 = deterministic).
+  # Note: newer models reject a custom temperature and use their provider default —
+  # OpenAI's GPT-5 family, and Anthropic Opus 4.7+/Sonnet 5/Fable 5. The harness
+  # omits temperature automatically for those (see evaluate_benchmark.py).
   temperature: 0.0
   
   # Delay between API calls in seconds (for rate limiting)
